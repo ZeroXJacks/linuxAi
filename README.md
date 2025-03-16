@@ -80,5 +80,5 @@ Common issues and solutions:
 
 ## Contact
 
-Your Name - [@yourtwitter](https://twitter.com/@ZeroXJacks)
+Your Name - [@ZeroXJacks](https://twitter.com/@ZeroXJacks)
 
