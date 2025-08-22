@@ -1,6 +1,6 @@
 # Gemini Chat Assistant
 
-![](linuxai.png)
+![](cyber_linux_ai_icon.svg)
 
 
 A modern desktop chat application powered by Google's Gemini AI, built with PyQt5. This application provides an intuitive interface for interacting with Gemini AI and executing commands.
