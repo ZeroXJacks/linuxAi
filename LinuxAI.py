@@ -7,22 +7,28 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
                            QLabel, QFrame, QScrollArea, QSplitter, 
                            QDialog, QFormLayout, QMessageBox)
 from PyQt5.QtCore import Qt, QTimer, QThread, pyqtSignal
-from PyQt5.QtGui import QColor, QPalette, QFont, QTextCursor
+from PyQt5.QtGui import QColor, QPalette, QFont, QTextCursor, QIcon
 import google.generativeai as genai
 import platform
 import datetime
 import getpass
 import subprocess
 COLORS = {
-    'bg_dark': '#0D1117',      
-    'bg_medium': '#161B22',   
-    'text': '#E6EDF3',    
-    'primary': '#1F6FEB', 
-    'primary_hover': '#2F81F7',
-    'accent': '#F7B64B',
-    'error': '#F85149',
-    'success': '#3FB950',
-    'border': '#30363D' 
+    'bg_dark': '#0a0a0f',           # Deep dark purple-black
+    'bg_medium': '#1a0d2e',         # Dark purple
+    'bg_light': '#16213e',          # Dark blue-purple
+    'text': '#00ffff',              # Cyan text
+    'text_secondary': '#ff00ff',    # Magenta secondary text
+    'primary': '#ff0080',           # Hot pink/magenta
+    'primary_hover': '#ff3399',     # Lighter hot pink
+    'accent': '#00ff41',            # Neon green
+    'accent_hover': '#39ff70',      # Lighter neon green
+    'error': '#ff073a',             # Neon red
+    'success': '#00ff88',           # Neon green success
+    'border': '#7b68ee',            # Medium slate blue
+    'border_glow': '#9370db',       # Medium purple
+    'warning': '#ffff00',           # Neon yellow
+    'shadow': '#ff00ff80'           # Semi-transparent magenta
 }
 
 class TerminalTextEdit(QTextEdit):
@@ -32,11 +38,18 @@ class TerminalTextEdit(QTextEdit):
             QTextEdit {{
                 background-color: {COLORS['bg_dark']};
                 color: {COLORS['text']};
-                border: none;
-                font-family: 'Ubuntu Mono', 'Courier New';
+                border: 2px solid {COLORS['border']};
+                font-family: 'Consolas', 'Ubuntu Mono', 'Courier New';
                 font-size: 14px;
-                padding: 10px;
-                border-radius: 5px;
+                padding: 15px;
+                border-radius: 8px;
+                selection-background-color: {COLORS['primary']};
+                selection-color: {COLORS['bg_dark']};
+                box-shadow: 0 0 20px {COLORS['shadow']};
+            }}
+            QTextEdit:focus {{
+                border: 2px solid {COLORS['border_glow']};
+                box-shadow: 0 0 25px {COLORS['border_glow']};
             }}
         """)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
@@ -152,7 +165,7 @@ class AIResponseThread(QThread):
     
     def run(self):
         try:
-            model = genai.GenerativeModel('gemini-pro')
+            model = genai.GenerativeModel('gemini-1.5-flash')
             response = model.generate_content(self.message)
             self.response_ready.emit(response.text)
         except Exception as e:
@@ -199,9 +212,14 @@ class CommandWidget(QFrame):
                 background-color: {COLORS['bg_medium']};
                 color: {COLORS['text']};
                 border: 2px solid {COLORS['border']};
-                border-radius: 8px;
-                margin: 5px;
-                padding: 10px;
+                border-radius: 10px;
+                margin: 8px;
+                padding: 15px;
+                box-shadow: 0 0 15px {COLORS['shadow']};
+            }}
+            QFrame:hover {{
+                border: 2px solid {COLORS['border_glow']};
+                box-shadow: 0 0 20px {COLORS['border_glow']};
             }}
         """)
         
@@ -210,7 +228,7 @@ class CommandWidget(QFrame):
         layout.setSpacing(10)
         
         header_layout = QHBoxLayout()
-        command_label = QLabel("💻 Command:")
+        command_label = QLabel("Command:")
         command_label.setStyleSheet(f"color: {COLORS['accent']}; font-weight: bold; font-size: 13px;")
         header_layout.addWidget(command_label)
         layout.addLayout(header_layout)
@@ -233,7 +251,7 @@ class CommandWidget(QFrame):
         """)
         command_layout.addWidget(self.command_input)
         
-        copy_btn = QPushButton("📋 Copy")
+        copy_btn = QPushButton("Copy")
         copy_btn.setStyleSheet(f"""
             QPushButton {{
                 background-color: {COLORS['primary']};
@@ -252,7 +270,7 @@ class CommandWidget(QFrame):
         layout.addLayout(command_layout)
         
         button_layout = QHBoxLayout()
-        self.execute_btn = QPushButton("▶ Execute")
+        self.execute_btn = QPushButton("Execute")
         self.execute_btn.setStyleSheet(f"""
             QPushButton {{
                 background-color: {COLORS['accent']};
@@ -302,12 +320,31 @@ class CommandWidget(QFrame):
 class GeminiChatApp(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Linux AI")
-        self.setGeometry(100, 100, 1000, 800)
+        self.setWindowTitle("CYBER LINUX AI")
+        self.setGeometry(100, 100, 1280, 720)
+        self.setMinimumSize(880, 420)
+        self.setMaximumSize(880, 420)
+        
+        # Set application icon
+        icon_path = os.path.join(os.path.dirname(__file__), 'cyber_linux_ai_icon.svg')
+        if os.path.exists(icon_path):
+            self.setWindowIcon(QIcon(icon_path))
+        
+        # Set window flags for custom styling
+        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowMinimizeButtonHint | Qt.WindowMaximizeButtonHint | Qt.WindowCloseButtonHint)
         
         self.setStyleSheet(f"""
             QMainWindow {{
                 background-color: {COLORS['bg_dark']};
+                border: 3px solid {COLORS['border_glow']};
+                border-radius: 10px;
+            }}
+            QMainWindow::title {{
+                background-color: {COLORS['bg_medium']};
+                color: {COLORS['text']};
+                padding: 10px;
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
             }}
             QScrollBar:vertical {{
                 background-color: {COLORS['bg_medium']};
@@ -346,7 +383,7 @@ class GeminiChatApp(QMainWindow):
         """)
         header_layout.addWidget(self.api_status_label)
         
-        self.api_key_button = QPushButton("🔑 Manage API Key")
+        self.api_key_button = QPushButton("Manage API Key")
         self.api_key_button.setStyleSheet(f"""
             QPushButton {{
                 background-color: {COLORS['primary']};
@@ -592,6 +629,12 @@ Dev @ZeroXJacks
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    
+    # Set application icon globally
+    icon_path = os.path.join(os.path.dirname(__file__), 'cyber_linux_ai_icon.svg')
+    if os.path.exists(icon_path):
+        app.setWindowIcon(QIcon(icon_path))
+    
     window = GeminiChatApp()
     window.show()
     sys.exit(app.exec_())
