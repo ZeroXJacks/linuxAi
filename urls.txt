@@ -1,0 +1,2 @@
+# Add authorized HTTPS pages here, one URL per line.
+# Example: https://example.com/help

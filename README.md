@@ -1,87 +1,20 @@
-# Gemini Chat Assistant
+# HTML Collector (authorized, allowlisted)
 
-![](cyber_linux_ai_icon.svg)
+A small HTML collector for pages you own or are authorized to retrieve. It accepts an explicit URL list; it does not enumerate IDs or crawl arbitrary sites.
 
-
-A modern desktop chat application powered by Google's Gemini AI, built with PyQt5. This application provides an intuitive interface for interacting with Gemini AI and executing commands.
-
-Linux AI Assistant
-
-## Features
-- 🔑 **Secure API Key Management**: Safely store and manage your Gemini API key
-- 💻 **Command Execution**: Execute commands directly from chat responses
-- 🎨 **Modern Dark Theme**: Easy on the eyes with a beautiful dark interface
-- ⚡ **Responsive Design**: Asynchronous processing prevents UI freezing
-- 📋 **Command History**: View and re-run previous commands
-
-## Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/@ZeroXJacks/LinuxAi.git
-```
-
-2. Install the required dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-3. Get your Gemini API key:
-   - Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
-   - Create a new API key
-   - Keep it safe for use in the application
+## Requirements
+- Python 3.11+
+- `pip install -r requirements.txt`
 
 ## Usage
+1. Create `urls.txt`, one HTTPS URL per line, from an authorized source.
+2. Set allowed hostnames (comma-separated) explicitly:
+   `python -m collector --urls urls.txt --output collected --allow-host example.com`
+3. Resume state is stored under `collected/state.json`. Use `--reset` to reset it.
+4. Output pages are saved as individual HTML files. `index.json` summarizes results.
 
-1. Start the application:
-```bash
-python LinuxAi.py
-```
+SSL verification is enabled. If CA certificates are unavailable, install/update system `ca-certificates` or update `certifi`; never disable verification.
 
-2. First-time setup:
-   - Click the "🔑 Manage API Key" button
-   - Enter your Gemini API key
-   - Click "Save API Key"
+Responses are size-limited (default 2 MiB). Redirects are restricted to allowlisted hosts.
 
-3. Start chatting:
-   - Type your message in the input field
-   - Press Enter or click "Send"
-   - View AI responses in the chat area
-
-4. Execute commands:
-   - When the AI provides a command (in ```backticks```), it will appear in the command area
-   - Click "📋 Copy" to copy the command
-   - Click "▶ Execute" to run the command
-   - View command output in the chat area
-
-## Security Notes
-
-- Your API key is stored locally in `api_key.json`
-- Never share your API key or commit it to version control
-- The application validates API key format before saving
-
-## Troubleshooting
-
-Common issues and solutions:
-
-1. **API Key Issues**:
-   - Ensure you've entered the correct API key
-   - Check your internet connection
-   - Verify your API key is active in Google AI Studio
-
-2. **Command Execution**:
-   - Make sure you have appropriate permissions
-   - Check command syntax before execution
-   - View error messages in the chat area
-
-
-## Acknowledgments
-
-- Google Gemini AI for the powerful language model
-- PyQt5 for the GUI framework
-- All contributors and users of this application
-
-## Contact
-
-Your Name - [@ZeroXJacks](https://twitter.com/@ZeroXJacks)
-
+Treat saved HTML as untrusted content; do not open it with scripts enabled.
